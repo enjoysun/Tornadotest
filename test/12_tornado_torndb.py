@@ -31,15 +31,25 @@ class BaseRequestHandler(RequestHandler):
         pass
 
     def write_error(self, status_code, **kwargs):
-        self.write("code {0} Msg {1}".format(status_code,  kwargs["Msg"]))
+        if status_code == 404:
+            print kwargs.get('Msg', 'None')
+            self.render("404.html", errmsg=kwargs['Msg'])
+        else:
+            self.write("code {0} Msg {1}".format(status_code,  kwargs.get("Msg", "sucess")))
+            return
 
     def on_finish(self):
-        pass
+        super(BaseRequestHandler, self).on_finish()
 
 
 class IndexHandler(BaseRequestHandler):
     def get(self, *args, **kwargs):
-        self.render("new.html")
+        # self.render("new.html")
+        # self.send_error(404, Msg=u"页面飞了")
+        dbhelper = self.application.db
+        result = dbhelper.get("select * from tb_user_info where user_id=%s", self.get_argument("id"))
+        usermsg = dict(uname=result["user_name"], umobile=result["user_mobile"], upass=result["user_passwd"])
+        self.render("data.html", userdic=[usermsg])
 
     def post(self, *args, **kwargs):
         name = self.get_argument("name")
@@ -58,11 +68,18 @@ class Msghandler(RequestHandler):
         user_dic = []
         for item in ret:
             user_dic.append({
-                "name": item["user_name"],
-                "mobile": item["user_mobile"],
-                "pass": item["user_passwd"]
+                "uname": item["user_name"],
+                "umobile": item["user_mobile"],
+                "upass": item["user_passwd"]
             })
         self.render("data.html", userdic=user_dic)
+
+
+class CookHandler(BaseRequestHandler):
+    def get(self, *args, **kwargs):
+        self.set_cookie(name='bb', value='cc')
+        coo = self.get_cookie(name='bb')
+        self.write(coo)
 
 
 if __name__ == "__main__":
@@ -72,7 +89,8 @@ if __name__ == "__main__":
     # conf = dict(debug=True, static_path=staticpath, template_path=templatepath)
     app = BaseApplication([
         (r'/', IndexHandler),
-        (r'/m/', Msghandler)
+        (r'/m/', Msghandler),
+        (r'/c/', CookHandler)
     ], **options.conf)
     curr_ser = HTTPServer(app)
     curr_ser.listen(options.port)
