@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>爱家-房源</title>
+    <link href="/static/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/reset.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
+    <link href="/static/css/index.css" rel="stylesheet">
+</head>
+<body>
+    <!--<div class="container">-->
+        <a href="#" onclick="javascript:gg();">赋值token</a>
+        <!--<form method="post">-->
+            <!--<input type="hidden" id="xsrf" name="_xsrf" value="">-->
+            <!--<input type="text" name="uname">-->
+            <!--<input type="submit" value="提交">-->
+        <!--</form>-->
+    <!--</div>-->
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/js/index.js"></script>
+    <script type="text/javascript">
+        $(function(){
+
+        })
+        function gg(){
+            var r=document.cookie.match("\\b_xsrf=([^;]*)\\b")
+            var xsrf=r?r[1]:undefined
+            var data = {
+                "aa":1
+            };
+            var json_data = JSON.stringify(data);
+            $.ajax({
+                url: "/",
+                method: "POST",
+                headers: {
+                    "X-XSRFToken":xsrf,
+                },
+                data:json_data,
+                success:function(data) {
+                    alert("OK");
+                }
+            })
+        }
+    </script>
+</body>
+</html>
