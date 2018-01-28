@@ -12,6 +12,7 @@ import time
 异步：为了防止cpu密集型或者io密集操作，影响别的客户端访问，引入协程异步（tornado单进程）
         1.在需要异步执行的方法加入coroutine装饰器
         2.在调用函数中使用yield Task(self.fun, (params))获取返回值
+    注意：使用gen协成异步，需要tornado库支持，耦合比较高，如果要达到非阻塞异步还有celery，celery运行在独立的线程，能够承担大负荷运算
 """
 
 
