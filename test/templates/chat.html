@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>聊天室</title>
+</head>
+<body>
+ <div id="contents" style="height:500px;overflow:auto;"></div>
+    <div>
+        <textarea id="msg"></textarea>
+        <a href="javascript:;" onclick="sendMsg()">发送</a>
+    </div>
+    <script src="{{static_url('js/jquery.min.js')}}"></script>
+<script>
+<!--1.websocke:使用ws协议链接，链接后。使用实例send方法发送数据，接收数据会有一个onmessage回调函数，该回调函数有一个参数，参数的data属性就是接收的值-->
+    var ws=new WebSocket("ws://127.0.0.1:8000/chat");
+    ws.onmessage=function(data){
+        $("#contents").append("<p>"+data.data+"</p>");
+    }
+    function sendMsg(){
+        var msg=$("#msg").val();
+        if(msg){
+            ws.send(msg);
+            $("#msg").val("");
+        }
+    }
+</script>
+</body>
+</html>
